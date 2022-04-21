@@ -30,8 +30,9 @@ namespace imgGllryIdServer.idp
                      ClientName = "Image Gallery",
                      ClientId = "imagegalleryclient",
                      AllowedGrantTypes = GrantTypes.Code,
-                     RedirectUris = new string[] {"https://localhost:44389/signin-oidc"},
-                     PostLogoutRedirectUris = new string[]{ "https://localhost:44389/signin-oidc" },
+                     RedirectUris = new List<string> {"https://localhost:44389/signin-oidc"},
+                     PostLogoutRedirectUris = new List<string> { "https://localhost:44389/signin-oidc" },
+                     RequirePkce = true,
                      AllowedScopes = new string[]
                      {
                          IdentityServerConstants.StandardScopes.Profile,

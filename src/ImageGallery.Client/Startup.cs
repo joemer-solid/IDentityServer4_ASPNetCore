@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,8 +34,19 @@ namespace ImageGallery.Client
                 client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
             });
 
+            // create an HttpClient used for accessing the IDP
+            services.AddHttpClient("IDPClient", client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:5001/");
+                client.DefaultRequestHeaders.Clear();
+                client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+            });
 
-                     
+            //services.Configure<CookiePolicyOptions>(options =>
+            //{
+            //    options.Secure = CookieSecurePolicy.Always;            
+            //});
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -47,7 +59,6 @@ namespace ImageGallery.Client
                options.ClientId = "imagegalleryclient";
                options.Authority = "https://localhost:5001/";
                options.ResponseType = "code";
-              // options.UsePkce = false;
                options.Scope.Add("profile");
                options.Scope.Add("openid");
                options.SaveTokens = true;
@@ -75,10 +86,11 @@ namespace ImageGallery.Client
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+           // app.UseCookiePolicy();
             app.UseRouting();
 
-            app.UseAuthorization();
-            app.UseAuthentication();            
+            app.UseAuthentication();
+            app.UseAuthorization();         
 
             app.UseEndpoints(endpoints =>
             {
